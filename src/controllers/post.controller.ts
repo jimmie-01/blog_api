@@ -1,9 +1,16 @@
 import { Request, Response } from "express";
-import { getAllPosts } from "../service/post.service.js";
+import { createNewPost, getAllPosts } from "../service/post.service.js";
 
-export const getPosts = async (req: Request, res: Response): Promise<void> => {
+export const getPosts = async (req: Request, res: Response) => {
 
 	const posts = await getAllPosts();
 
 	res.status(200).json(posts);
 };
+
+export const createPost = async(req: Request, res: Response) => {
+
+	const post = await createNewPost(req.body);
+
+	res.status(201).json(post);
+}
