@@ -1,32 +1,42 @@
 import { Request, Response, NextFunction } from "express";
+import { createPostSchema } from "../validate/post.schema.js"
 
 export const validateCreatePost = (req: Request, res: Response, next: NextFunction) => {
 
-	const { title, content, user_id } = req.body;
+	const result = createPostSchema.safeParse(req.body);
 
-	if (!title || typeof title !== "string") {
+	if (!result.success) {
 		return res.status(400).json({
-			message: "Title is requires."
+			errors: result.error.issues
 		});
 	}
 
-	if (title.trim().length < 10) {
-		return res.status(400).json({
-			message: "Title must be at least 10 characters"
-		});
-	}
+	req.body = result.data;
 
-	if (!content || typeof content !== "string") {
-		return res.status(400).json({
-			message: "content is required."
-		});
-	}
-
-	if (typeof user_id !== "number") {
-		return res.status(400).json({
-			message: "user_id must be a number"
-		});
-	}
-	
 	next();
+	// const { title, content, user_id } = req.body;
+
+	// if (!title || typeof title !== "string") {
+	// 	return res.status(400).json({
+	// 		message: "Title is requires."
+	// 	});
+	// }
+
+	// if (title.trim().length < 10) {
+	// 	return res.status(400).json({
+	// 		message: "Title must be at least 10 characters"
+	// 	});
+	// }
+
+	// if (!content || typeof content !== "string") {
+	// 	return res.status(400).json({
+	// 		message: "content is required."
+	// 	});
+	// }
+
+	// if (typeof user_id !== "number") {
+	// 	return res.status(400).json({
+	// 		message: "user_id must be a number"
+	// 	});
+	//}
 };
