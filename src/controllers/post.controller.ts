@@ -14,8 +14,10 @@ export const getPosts = async (req: Request, res: Response) => {
 
 export const createPost = async(req: Request, res: Response) => {
 	try {
+
 		const post = await createNewPost(req.body);
 		res.status(201).json(post);	
+
 	} catch (error) {
 		console.error(error);
 
@@ -26,4 +28,4 @@ export const createPost = async(req: Request, res: Response) => {
 		}
 		return res.status(500).json({ message: "Internal Server Error"});
 	}	
-};
+}
