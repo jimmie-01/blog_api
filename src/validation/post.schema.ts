@@ -9,5 +9,5 @@ export const createPostSchema = z.object({
 	.string()
 	.min(1, "Content is required"),
 
-	user_id: z.nnumber()
+	user_id: z.number()
 });

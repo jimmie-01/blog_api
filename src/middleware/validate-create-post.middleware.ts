@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { createPostSchema } from "../validate/post.schema.js"
+import { createPostSchema } from "../validation/post.schema.js"
 
 export const validateCreatePost = (req: Request, res: Response, next: NextFunction) => {
 
