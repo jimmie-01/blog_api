@@ -11,3 +11,7 @@ export const createPostSchema = z.object({
 
 	user_id: z.number()
 });
+
+export const  updatePostSchema = 
+createPostSchema.omit({ user_id: true }).partial();
+//omit() removes user_id and partial() makes the remaining fields optional
