@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { createNewPost, getAllPosts } from "../service/post.service.js";
+import { createNewPost, getAllPosts, updateExistingPost } from "../service/post.service.js";
 
 export const getPosts = async (req: Request, res: Response) => {
 	try {
@@ -20,3 +20,16 @@ export const createPost = async(req: Request, res: Response, next: NextFunction)
 		next(error);
 	}	
 };
+
+export const updatePost = async (req: Request, res: Response, next: NextFunction) => {
+
+	try {
+		const id = Number(req.params.id);
+
+		const post = await updateExistingPost(id, req.body);
+
+		return res.json(post);
+	} catch (error) {
+		next(error);
+	}
+}
