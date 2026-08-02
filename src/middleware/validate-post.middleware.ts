@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { createPostSchema } from "../validation/post.schema.js"
+import { createPostSchema, updatePostSchema } from "../validation/post.schema.js"
 
 export const validateCreatePost = (req: Request, res: Response, next: NextFunction) => {
 
@@ -40,3 +40,20 @@ export const validateCreatePost = (req: Request, res: Response, next: NextFuncti
 	// 	});
 	//}
 };
+
+export const validateUpdatePost = (req: Request, res: Response, next: NextFunction) => {
+
+	const result = updatePostSchema.safeParse(req.body);
+
+	if (!result.success) {
+		return res.status(400).json({
+			message: "Validation Failed",
+			errors: result.error.issues
+		});
+	}
+
+	// Replace req.body with the validated data
+	req.body = result.data;
+
+	next();
+}
