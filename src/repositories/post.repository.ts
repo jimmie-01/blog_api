@@ -27,3 +27,12 @@ export const updatePost = async (id: number, data: UpdatePostDto) => {
 
 	return await prisma.posts.update({ where: { id }, data: updateData })
 }
+
+export const deletePost = async (id: number) => {
+
+	return prisma.posts.delete({
+		where: {
+			id
+		}
+	});
+};
