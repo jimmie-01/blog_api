@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { createNewPost, deleteExistingPost, getAllPosts, getPostById, updateExistingPost } from "../service/post.service.js";
+import { createNewPost, deleteExistingPost, getAllPosts, findPostById, updateExistingPost } from "../service/post.service.js";
 
 export const getPosts = async (req: Request, res: Response) => {
 	try {
@@ -11,11 +11,11 @@ export const getPosts = async (req: Request, res: Response) => {
 	}
 };
 
-export const findPostById = async (req: Request, res: Response, next: NextFunction) => {
+export const getPostById = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const id = Number(req.params.id);
 
-		const post = await getPostById(id);
+		const post = await findPostById(id);
 
 		res.status(200).json(post);
 		//Check Status Code for Single Request
