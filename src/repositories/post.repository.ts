@@ -7,6 +7,12 @@ export const findAllPosts = async () => {
 	return prisma.posts.findMany();
 };
 
+export const findPostById = async (id: number) => {
+	return prisma.posts.findUnique({
+		where: { id }
+	});
+};
+
 export const createPost = async (data: CreatePostDto) => {
 	return prisma.posts.create({
 		data

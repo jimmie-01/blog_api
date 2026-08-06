@@ -11,7 +11,7 @@ describe("Post Service", () => {
 		const fakePosts = [
 			{
 				id: 1,
-				title: "Learning Unit Testing With Typscirpt"
+				title: "Learning Unit Testing With Typscript"
 			}
 		];
 
@@ -22,3 +22,10 @@ describe("Post Service", () => {
 		expect(result).toEqual(fakePosts);
 	});
 });
+
+describe("getPostById", () => {
+
+	it("should throw NotFoundError when post does not exist", async () => {
+		vi.spyOn(repository, "findPostById")
+	})
+})

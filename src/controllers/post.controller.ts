@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { createNewPost, deleteExistingPost, getAllPosts, updateExistingPost } from "../service/post.service.js";
+import { createNewPost, deleteExistingPost, getAllPosts, getPostById, updateExistingPost } from "../service/post.service.js";
 
 export const getPosts = async (req: Request, res: Response) => {
 	try {
@@ -8,6 +8,19 @@ export const getPosts = async (req: Request, res: Response) => {
 	} catch (error) {
 		console.error(error);
 		res.status(500).json({ message: "Something went wrong" });
+	}
+};
+
+export const findPostById = async (req: Request, res: Response, next: NextFunction) => {
+	try {
+		const id = Number(req.params.id);
+
+		const post = await getPostById(id);
+
+		res.status(200).json(post);
+		//Check Status Code for Single Request
+	} catch (error) {
+		next(error);
 	}
 };
 
@@ -42,7 +55,7 @@ export const deletePost = async (req: Request, res: Response, next: NextFunction
 		await deleteExistingPost(id);
 
 		res.status(204).send();
-		//204 No Conten\\
+		//204 No Content\\
 	} catch (error) {
 		next(error);
 	}
