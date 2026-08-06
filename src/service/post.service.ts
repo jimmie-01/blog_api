@@ -13,7 +13,7 @@ export const findPostById = async (id: number) => {
 	const post = await getPostById(id);
 
 	if (!post) {
-		return new NotFoundError("Post Not Found");
+		throw new NotFoundError("Post Not Found");
 	}
 
 	return getPostById(id);

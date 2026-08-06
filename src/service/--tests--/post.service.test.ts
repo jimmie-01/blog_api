@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import * as repository from "../../repositories/post.repository.js";
-import { getAllPosts } from "../post.service.js";
+import { findPostById, getAllPosts } from "../post.service.js";
+import { NotFoundError } from "../../errors/bad-request.error.js";
 
 vi.mock("../../repositories/post.repository.js");
 
@@ -26,6 +27,9 @@ describe("Post Service", () => {
 describe("getPostById", () => {
 
 	it("should throw NotFoundError when post does not exist", async () => {
-		vi.spyOn(repository, "findPostById")
-	})
-})
+
+		vi.spyOn(repository, "getPostById").mockResolvedValue(null);
+		
+		await expect(findPostById(1)).rejects.toThrow("Post Not Found");
+	});
+});
