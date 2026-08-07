@@ -1,7 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import * as repository from "../../repositories/post.repository.js";
 import { findPostById, getAllPosts } from "../post.service.js";
-import { NotFoundError } from "../../errors/bad-request.error.js";
 
 vi.mock("../../repositories/post.repository.js");
 
@@ -22,6 +21,21 @@ describe("Post Service", () => {
 
 		expect(result).toEqual(fakePosts);
 	});
+
+	it("should return a unique post", async () => {
+		const fakePosts =
+			{
+				id: 1,
+				title: "Learning Unit Testing With Typscript"
+			};
+
+		const spy = vi.spyOn(repository, "getPostById").mockResolvedValue(fakePosts);
+
+		const result = await findPostById(1);
+
+		expect(spy).toHaveBeenCalledWith(1);
+		expect(result).toEqual(fakePosts);
+	})
 });
 
 describe("getPostById", () => {
