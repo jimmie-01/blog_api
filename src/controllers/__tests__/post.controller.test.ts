@@ -39,5 +39,32 @@ describe("Post Controller", () => {
 		expect(res.json).toHaveBeenCalledWith(fakePost);
 	});
 
-	
+	it("should pass the error to next when the service fails", async () => {
+
+		const req = {
+			body: {
+				title: "Learning Testing",
+				content: "controllers are fun",
+				user_id: 1
+			} as unknown as Request
+		}
+		const res = {
+			status: vi.fn().mockReturnThis(),
+			json: vi.fn()
+		} as unknown as Response;
+
+		const next = vi.fn();
+
+		const error = new Error("Database failure");
+
+		vi.spyOn(service, "createNewPost").mockRejectedValue(error);
+
+		await createPost(req, res, next);
+
+		expect(next).toHaveBeenCalledWith(error);
+
+		expect(res.status).not.toHaveBeenCalled();
+
+		expect(res.json).not.toHaveBeenCalled();
+	});
 })
