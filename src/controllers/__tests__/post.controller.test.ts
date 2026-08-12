@@ -1,15 +1,16 @@
 import { describe, it, expect, vi } from "vitest";
+import { Request, Response } from "express";
 import { createPost } from "../post.controller.js";
 import * as service from "../../service/post.service.js";
 
 vi.mock("../../service/post.service.js");
 
 describe("Post Controller", () => {
-	it("should return 201 and the created post when a valid data is provided", async () => {
+	it("should return 201 and the created post when the service succeeds", async () => {
 		const req = {
 			body: {
 				title: "Learning Testing",
-				content: "Controller are fun.",
+				content: "Controllers are fun.",
 				user_id: 1
 			}
 		} as unknown as Request;
@@ -37,4 +38,6 @@ describe("Post Controller", () => {
 
 		expect(res.json).toHaveBeenCalledWith(fakePost);
 	});
+
+	
 })
