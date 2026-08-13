@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { Request, Response } from "express";
 import { createPost } from "../post.controller.js";
 import * as service from "../../service/post.service.js";
@@ -6,6 +6,11 @@ import * as service from "../../service/post.service.js";
 vi.mock("../../service/post.service.js");
 
 describe("Post Controller", () => {
+	
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
+
 	it("should return 201 and the created post when the service succeeds", async () => {
 		const req = {
 			body: {

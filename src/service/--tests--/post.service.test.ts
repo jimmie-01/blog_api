@@ -1,10 +1,14 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import * as repository from "../../repositories/post.repository.js";
 import { findPostById, getAllPosts } from "../post.service.js";
 
 vi.mock("../../repositories/post.repository.js");
 
 describe("Post Service", () => {
+
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
 
 	it("should return all posts", async () => {
 
@@ -35,13 +39,10 @@ describe("Post Service", () => {
 
 		expect(spy).toHaveBeenCalledWith(1);
 		expect(result).toEqual(fakePosts);
-	})
-});
-
-describe("getPostById", () => {
+	});
 
 	it("should throw NotFoundError when post does not exist", async () => {
-
+		
 		vi.spyOn(repository, "getPostById").mockResolvedValue(null);
 		
 		await expect(findPostById(1)).rejects.toThrow("Post Not Found");
