@@ -8,7 +8,8 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "test": "vitest",
-    "test:watch": "vitest --watch"
+    "test:watch": "vitest --watch",
+    "test:integration": "vitest --config vitest.integration.config.ts"
   },
   "keywords": [],
   "author": "",
