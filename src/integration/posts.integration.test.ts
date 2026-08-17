@@ -1,29 +1,24 @@
-import { describe, it, expect, beforeAll, afterAll } from "vitest";
+import { describe, it, expect, beforeEach, afterAll } from "vitest";
 import request from "supertest";
 import app from "../app.js";
 import prisma from "../lib/prisma.js";
+import { cleanDatabase, createTestUser } from "./helpers/database.js";
 
 describe("POST /api/posts", () => {
 
 	let testUserId: number;
 
-	beforeAll(async () => {
-		const user = await prisma.users.create({
-			data: {
-				name: "Test User",
-				email: "test@example.com",
-				username: "testuser"
-			}
-		});
+	beforeEach(async () => {
+		await cleanDatabase();
+
+		const user = await createTestUser();
 
 		testUserId = user.id;
 	});
 
 	afterAll(async () => {
-		await prisma.comments.deleteMany();
-		await prisma.posts.deleteMany();
-		await prisma.users.deleteMany();
-
+		await cleanDatabase();
+		
 		await prisma.$disconnect();
 	});
 
