@@ -37,10 +37,25 @@ describe("POST /api/posts", () => {
 			user_id: testUserId
 		});
 
-		console.log(JSON.stringify(response.body, null, 2));
+		// console.log(JSON.stringify(response.body, null, 2));
 		expect(response.status).toBe(201);
 
 		expect(response.body).toMatchObject({
+			user_id: testUserId,
+			title: "Learning Integration Testing",
+			content: "Testing the complete application"
+		});
+
+		const post = await prisma.posts.findUnique({
+			where: {
+				id: response.body.id
+			}
+		});
+
+		expect(post).not.toBeNull();
+		//This ensures the post was saved on the database
+
+		expect(post).toMatchObject({
 			user_id: testUserId,
 			title: "Learning Integration Testing",
 			content: "Testing the complete application"
