@@ -134,5 +134,11 @@ describe("POST /api/posts", () => {
 		});
 	});
 
-	
+	it("should return 404 when the post does not exists", async () => {
+
+		const response = 
+		await request(app).get("/api/posts/9999");
+
+		expect(response.status).toBe(404);
+	})
 })
