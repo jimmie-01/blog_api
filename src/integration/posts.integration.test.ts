@@ -56,4 +56,57 @@ describe("POST /api/posts", () => {
 			content: "Testing the complete application"
 		});
 	});
+
+	it("should return all posts", async () => {
+
+		//Arrange
+		const post1 = await prisma.posts.create({
+			data: {
+				title: "Learning TypeScript",
+				content: "Typescript is powerful",
+				user_id: testUserId
+			}
+		});
+
+		const post2 = await prisma.posts.create({
+			data: {
+				title: "Learning PostgreSQL",
+				content: "PostgreSQL is relaible",
+				user_id: testUserId
+			}
+		});
+
+		const post3 = await prisma.posts.create({
+			data: {
+				title: "Learning Integration Testing",
+				content: "Testing the complete application",
+				user_id: testUserId
+			}
+		});
+
+		//Act
+		const response = await request(app).get("/api/posts");
+
+		//Assert
+		expect(response.status).toBe(200);
+
+		expect(response.body).toHaveLength(3);
+
+		expect(response.body).toEqual(expect.arrayContaining([
+			expect.objectContaining({
+				id: post1.id,
+				title: "Learning TypeScript"
+			}),
+			
+			expect.objectContaining({
+				id: post2.id,
+				title: "Learning PostgreSQL"
+			}),
+
+			expect.objectContaining({
+				id: post3.id,
+				title: "Learning Integration Testing"
+			})
+		]))
+	});
 })
