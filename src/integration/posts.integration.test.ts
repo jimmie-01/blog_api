@@ -3,6 +3,7 @@ import request from "supertest";
 import app from "../app.js";
 import prisma from "../lib/prisma.js";
 import { cleanDatabase, createTestUser } from "./helpers/database.js";
+import { title } from "node:process";
 
 describe("POST /api/posts", () => {
 
@@ -109,4 +110,29 @@ describe("POST /api/posts", () => {
 			})
 		]))
 	});
+
+	it("should return a single post", async () => {
+
+		const post = await prisma.posts.create({
+			data: {
+				title: "Learning Prisma",
+				content: "Prisma makes database access easier",
+				user_id: testUserId
+			}
+		});
+		
+		const response = 
+		await request(app).get(`/api/posts/${post.id}`);
+
+		expect(response.status).toBe(200);
+
+		expect(response.body).toMatchObject({
+			id: post.id,
+			user_id: testUserId,
+			title: "Learning Prisma",
+			content: "Prisma makes database access easier"
+		});
+	});
+
+	
 })
