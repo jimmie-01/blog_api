@@ -140,5 +140,92 @@ describe("POST /api/posts", () => {
 		await request(app).get("/api/posts/9999");
 
 		expect(response.status).toBe(404);
-	})
+	});
+
+	it("should update an existing post", async () => {
+
+		const post = await prisma.posts.create({
+			data: {
+				title: "Original title",
+				content: "original content",
+				user_id: testUserId
+			}
+		});
+
+		const response = 
+		await request(app).patch(`/api/posts/${post.id}`)
+		.send({
+			title: "Updated title",
+			content: "Updated content"
+		});
+
+		expect(response.status).toBe(200);
+
+		expect(response.body).toMatchObject({
+			user_id: testUserId,
+			title: "Updated title",
+			content: "Updated content"
+		});
+
+		const updatedPost = 
+		await prisma.posts.findUnique({
+			where: {
+				id: post.id
+			}
+		});
+
+		expect(updatedPost).toMatchObject({
+			id: post.id,
+			user_id: testUserId,
+			title: "Updated title",
+			content: "Updated content"
+		});
+	});
+
+	it("should return 404 when updating a post that does not exist", async () => {
+
+		const response = 
+		await request(app).patch("/api/posts/99999")
+		.send({
+			title: "Updated Title"
+		});
+
+		expect(response.status).toBe(404);
+	});
+
+	it("should return 400 when the update body is empty", async () => {
+
+		const post = await prisma.posts.create({
+			data: {
+				title: "Original Post",
+				content: "Original Content",
+				user_id: testUserId
+			}
+		});
+
+		const response = 
+		await request(app).patch(`/api/posts/${post.id}`)
+		.send({});
+
+		expect(response.status).toBe(400);
+	});
+
+	it("should return 400 when the update data is invalid", async () => {
+
+		const post = await prisma.posts.create({
+			data: {
+				title: "Original Post",
+				content: "Original Content",
+				user_id: testUserId
+			}
+		});
+
+		const response = 
+		await request(app).patch(`/api/posts/${post.id}`)
+		.send({
+			title: 123
+		});
+
+		expect(response.status).toBe(400);
+	});
 })
