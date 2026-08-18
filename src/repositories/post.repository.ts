@@ -42,10 +42,16 @@ export const updatePost = async (id: number, data: UpdatePostDto) => {
 }
 
 export const deletePost = async (id: number) => {
-
-	return prisma.posts.delete({
+	try {
+		return prisma.posts.delete({
 		where: {
 			id
 		}
 	});
+	} catch (error) {
+		if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025") {
+			throw new AppError("Post not found", 404);
+		}
+		throw error;
+	}
 };

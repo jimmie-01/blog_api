@@ -228,4 +228,37 @@ describe("POST /api/posts", () => {
 
 		expect(response.status).toBe(400);
 	});
+
+	it("should delete an existing post", async () => {
+
+		const post = await prisma.posts.create({
+			data: {
+				title: "Post to delete",
+				content: "This post should be deleted",
+				user_id: testUserId
+			}
+		});
+
+		const response = 
+		await request(app).delete(`/api/posts/${post.id}`);
+
+		expect(response.status).toBe(204);
+
+		const deletedPost = 
+		await prisma.posts.findUnique({
+			where: {
+				id: post.id
+			}
+		});
+
+		expect(deletedPost).toBeNull();
+	});
+
+	it("should return 404 when deleting a post that does not exist", async () => {
+
+		const response = 
+		await request(app).delete("/api/posts/99999");
+
+		expect(response.status).toBe(404);
+	});
 })
