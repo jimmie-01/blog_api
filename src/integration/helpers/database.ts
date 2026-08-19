@@ -7,13 +7,3 @@ export const cleanDatabase = async () => {
 
 	await prisma.users.deleteMany();
 };
-
-export const createTestUser = async () => {
-	return prisma.users.create({
-		data: {
-			name: "Test User",
-			email: `test-${Date.now()}@example.com`,
-			username: `testuser-${Date.now()}`
-		}
-	});
-};

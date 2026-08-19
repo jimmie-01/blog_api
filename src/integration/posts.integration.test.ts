@@ -2,8 +2,8 @@ import { describe, it, expect, beforeEach, afterAll } from "vitest";
 import request from "supertest";
 import app from "../app.js";
 import prisma from "../lib/prisma.js";
-import { cleanDatabase, createTestUser } from "./helpers/database.js";
-import { title } from "node:process";
+import { cleanDatabase } from "./helpers/database.js";
+import { createTestUser } from "./helpers/factories.js";
 
 describe("POST /api/posts", () => {
 
