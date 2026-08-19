@@ -237,4 +237,80 @@ describe("POST /api/posts", () => {
 
 		expect(response.status).toBe(404);
 	});
+
+	it("should reject a post with an empty title", async () => {
+
+		const response = 
+		await request(app).post("/api/posts")
+		.send({
+			title: "",
+			content: "Testing Edge Cases",
+			user_id: testUserId
+		});
+
+		expect(response.status).toBe(400);
+	});
+
+	it("should reject a post with empty content", async () => {
+
+		const response = 
+		await request(app).post("/api/posts").send({
+			title: "A Valid Title",
+			content: "",
+			user_id: testUserId
+		});
+
+		expect(response.status).toBe(400);
+	});
+
+	it("should reject a post when title is missing", async () => {
+
+		const response = 
+		await request(app).post("/api/posts").send({
+			content: "A Valid Content",
+			user_id: testUserId
+		});
+
+		expect(response.status).toBe(400);
+	});
+
+	it("should reject a title when title is not a string", async () => {
+
+		const response = 
+		await request(app).post("/api/posts").send({
+			title: 123,
+			content: "A Valid Content",
+			user_id: testUserId
+		});
+
+		expect(response.status).toBe(400);
+	});
+
+	it("should accept a title with exactly 100 chharacters", async () => {
+
+		const title = "A".repeat(100);
+
+		const response = 
+		await request(app).post("/api/posts").send({
+			title,
+			content: "A Valid Content",
+			user_id: testUserId
+		});
+
+		expect(response.status).toBe(201);
+	});
+
+	it("should reject a title longer than 100 chharacters", async () => {
+		
+		const title = "A".repeat(101);
+
+		const response = 
+		await request(app).post("/api/posts").send({
+			title,
+			content: "A Valid Content",
+			user_id: testUserId
+		});
+
+		expect(response.status).toBe(400);
+	});
 })
