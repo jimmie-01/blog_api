@@ -1,5 +1,3 @@
-import { string } from "zod";
-import { UsersScalarFieldEnum } from "../../generated/prisma/internal/prismaNamespace.js";
 import prisma from "../../lib/prisma.js";
 
 export const createTestUser = async (

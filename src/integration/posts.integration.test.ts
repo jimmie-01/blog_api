@@ -3,7 +3,7 @@ import request from "supertest";
 import app from "../app.js";
 import prisma from "../lib/prisma.js";
 import { cleanDatabase } from "./helpers/database.js";
-import { createTestUser } from "./helpers/factories.js";
+import { createTestPost, createTestUser } from "./helpers/factories.js";
 
 describe("POST /api/posts", () => {
 
@@ -61,29 +61,20 @@ describe("POST /api/posts", () => {
 	it("should return all posts", async () => {
 
 		//Arrange
-		const post1 = await prisma.posts.create({
-			data: {
-				title: "Learning TypeScript",
-				content: "Typescript is powerful",
-				user_id: testUserId
-			}
+		const post1 = await createTestPost(testUserId, {
+			title: "Learning TypeScript",
+			content: "Typescript is powerful"
 		});
 
-		const post2 = await prisma.posts.create({
-			data: {
-				title: "Learning PostgreSQL",
-				content: "PostgreSQL is relaible",
-				user_id: testUserId
-			}
+		const post2 = await createTestPost(testUserId, {
+			title: "Learning PostgreSQL",
+			content: "PostgreSQL is relaible",
 		});
 
-		const post3 = await prisma.posts.create({
-			data: {
+		const post3 = await createTestPost(testUserId,{
 				title: "Learning Integration Testing",
 				content: "Testing the complete application",
-				user_id: testUserId
-			}
-		});
+			});
 
 		//Act
 		const response = await request(app).get("/api/posts");
@@ -113,13 +104,10 @@ describe("POST /api/posts", () => {
 
 	it("should return a single post", async () => {
 
-		const post = await prisma.posts.create({
-			data: {
+		const post = await createTestPost(testUserId, {
 				title: "Learning Prisma",
 				content: "Prisma makes database access easier",
-				user_id: testUserId
-			}
-		});
+			});
 		
 		const response = 
 		await request(app).get(`/api/posts/${post.id}`);
@@ -144,13 +132,10 @@ describe("POST /api/posts", () => {
 
 	it("should update an existing post", async () => {
 
-		const post = await prisma.posts.create({
-			data: {
+		const post = await createTestPost(testUserId, {
 				title: "Original title",
 				content: "original content",
-				user_id: testUserId
-			}
-		});
+			});
 
 		const response = 
 		await request(app).patch(`/api/posts/${post.id}`)
@@ -195,13 +180,10 @@ describe("POST /api/posts", () => {
 
 	it("should return 400 when the update body is empty", async () => {
 
-		const post = await prisma.posts.create({
-			data: {
+		const post = await createTestPost(testUserId, {
 				title: "Original Post",
 				content: "Original Content",
-				user_id: testUserId
-			}
-		});
+			});
 
 		const response = 
 		await request(app).patch(`/api/posts/${post.id}`)
@@ -212,13 +194,10 @@ describe("POST /api/posts", () => {
 
 	it("should return 400 when the update data is invalid", async () => {
 
-		const post = await prisma.posts.create({
-			data: {
+		const post = await createTestPost(testUserId, {
 				title: "Original Post",
 				content: "Original Content",
-				user_id: testUserId
-			}
-		});
+			});
 
 		const response = 
 		await request(app).patch(`/api/posts/${post.id}`)
@@ -231,13 +210,10 @@ describe("POST /api/posts", () => {
 
 	it("should delete an existing post", async () => {
 
-		const post = await prisma.posts.create({
-			data: {
+		const post = await createTestPost(testUserId, {
 				title: "Post to delete",
 				content: "This post should be deleted",
-				user_id: testUserId
-			}
-		});
+			});
 
 		const response = 
 		await request(app).delete(`/api/posts/${post.id}`);
