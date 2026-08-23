@@ -5,6 +5,7 @@ export const createTestUser = async (
 	name: string;
 	email: string;
 	username: string;
+	password_hash: string
 }> = {}
 ) => {
 	return prisma.users.create({
@@ -12,6 +13,7 @@ export const createTestUser = async (
 			name: "Test User",
 			email: `test-${Date.now()}@example.com`,
 			username: `testuser-${Date.now()}`,
+			password_hash: "test-password-hash",
 			...overrides
 		}
 	});
