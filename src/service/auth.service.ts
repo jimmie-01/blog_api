@@ -4,12 +4,27 @@ import { createUser } from "../repositories/user.repository.js";
 
 export const registerUser = async (data: RegisterUserDto) => {
 
-	const password_hash = await hashPassword(data.password);
+	const existingEmail = 
+	await repository.findUserByEmail(data.email);
+
+	if (existingEmail) {
+		throw new Error("Email already exists");
+	};
+
+	const existingUsername = 
+	await repository.findUserByUsername(data.username);
+
+	if (existingUsername) {
+		throw new Error("Username already exist");
+	}
+
+	const { password, ...userData } = data;
+
+	const password_hash = 
+	await hashPassword(data.password);
 
 	return createUser({
-		name: data.name,
-		email:data.email,
-		username: data.username,
+		...userData,
 		password_hash
 	});
 }
