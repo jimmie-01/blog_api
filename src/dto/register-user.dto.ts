@@ -1,4 +1,6 @@
 import z from "zod";
-import { registerSchema } from "../validation/auth.schema.js";
+import { createUserSchema, registerUserSchema } from "../validation/auth.schema.js";
 
-export type RegisterDto = z.infer<typeof registerSchema>;
+export type RegisterUserDto = z.infer<typeof registerUserSchema>;
+
+export type createUserDto = z.infer<typeof createUserSchema>;
