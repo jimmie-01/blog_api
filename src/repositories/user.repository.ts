@@ -1,5 +1,5 @@
 import prisma from "../lib/prisma.js";
-import { RegisterUserDto } from "../dto/register-user.dto.js";
+import { CreateUserDto } from "../dto/register-user.dto.js";
 
 // interface RegisterUserDto {
 // 	name: string;
@@ -8,7 +8,7 @@ import { RegisterUserDto } from "../dto/register-user.dto.js";
 // 	password_hash: string;
 // }
 
-export const createUser = async (data: RegisterUserDto) => {
+export const createUser = async (data: CreateUserDto) => {
 
 	return prisma.users.create({ data });
 };

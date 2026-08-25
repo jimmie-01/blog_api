@@ -3,4 +3,4 @@ import { createUserSchema, registerUserSchema } from "../validation/auth.schema.
 
 export type RegisterUserDto = z.infer<typeof registerUserSchema>;
 
-export type createUserDto = z.infer<typeof createUserSchema>;
+export type CreateUserDto = z.infer<typeof createUserSchema>;

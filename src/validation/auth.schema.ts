@@ -8,10 +8,10 @@ const userIdentitySchema = z.object({
 
 export const registerUserSchema = 
 userIdentitySchema.extend({
-	password_hash: z.string()
+	password: z.string().min(8)
 });
 
 export const createUserSchema = 
 userIdentitySchema.extend({
-	password: z.string().min(8)
+	password_hash: z.string()
 });

@@ -1,8 +1,8 @@
 import { hashPassword } from "../utils/password.js";
-import { createUserDto } from "../dto/register-user.dto.js";
+import { RegisterUserDto } from "../dto/register-user.dto.js";
 import { createUser } from "../repositories/user.repository.js";
 
-export const registerUser = async (data: createUserDto) => {
+export const registerUser = async (data: RegisterUserDto) => {
 
 	const password_hash = await hashPassword(data.password);
 
