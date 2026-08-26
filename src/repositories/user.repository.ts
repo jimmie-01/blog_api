@@ -9,8 +9,7 @@ import { CreateUserDto } from "../dto/register-user.dto.js";
 // }
 
 export const createUser = async (data: CreateUserDto) => {
-
-	return prisma.users.create({ data });
+	return await prisma.users.create({ data });
 };
 
 export const findUserByEmail = async (email: string) => {

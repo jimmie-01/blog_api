@@ -1,7 +1,5 @@
 import { Request, Response, NextFunction } from "express";
 import { createPostSchema, updatePostSchema } from "../validation/post.schema.js";
-import { userLoginSchema } from "../validation/auth.schema.js";
-import { error } from "node:console";
 
 export const validateCreatePost = (req: Request, res: Response, next: NextFunction) => {
 
@@ -55,23 +53,6 @@ export const validateUpdatePost = (req: Request, res: Response, next: NextFuncti
 	}
 
 	// Replace req.body with the validated data
-	req.body = result.data;
-
-	next();
-}
-
-export const validateUserLogin = 
-(req: Request, res: Response, next: NextFunction) => {
-
-	const result = userLoginSchema.safeParse(req.body);
-
-	if (!result.success) {
-		return res.status(400).json({
-			message: "Validation failed",
-			error: result.error.flatten()
-		});
-	};
-
 	req.body = result.data;
 
 	next();
