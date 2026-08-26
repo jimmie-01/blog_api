@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { registerUser } from "../auth.service.js";
 import * as repository from "../../repositories/user.repository.js";
 import * as passwordHelper from "../../utils/password.js";
-import { userInfo } from "node:os";
 
 vi.mock("../../repositories/user.repository.js");
 vi.mock("../../utils/password.js");
@@ -11,6 +10,8 @@ describe("Register User (Auth)", () => {
 
 	beforeEach(() => {
 		vi.clearAllMocks();
+
+		vi.resetAllMocks();
 	});
 
 	it("should return the registered user", async () =>{
@@ -110,7 +111,7 @@ describe("Register User (Auth)", () => {
 		mockResolvedValue(existingUser);
 
 		await expect(registerUser(input)).
-		rejects.toThrow("Username already exists");
+		rejects.toThrow("Username already exist");
 
 		expect(repository.findUserByUsername).
 		toHaveBeenCalledWith(input.username);
@@ -122,7 +123,7 @@ describe("Register User (Auth)", () => {
 		not.toHaveBeenCalled();
 	});
 
-	it("should propagate password hashing  errors", async() => {
+	it("should propagate password hashing errors", async() => {
 		
 		const input = {
 			name: "Razaq",
@@ -163,6 +164,9 @@ describe("Register User (Auth)", () => {
 
 		vi.mocked(repository.findUserByUsername).
 		mockResolvedValue(null);
+
+		vi.mocked(passwordHelper.hashPassword).
+		mockResolvedValue(fakeHashPassword);
 
 		vi.mocked(repository.createUser).
 		mockRejectedValue(new Error("Database failure"));

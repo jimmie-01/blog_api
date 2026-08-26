@@ -15,3 +15,8 @@ export const createUserSchema =
 userIdentitySchema.extend({
 	password_hash: z.string()
 });
+
+export const userLoginSchema = z.object({
+	email: z.email(),
+	password: z.string().min(8)
+});
