@@ -2,7 +2,6 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import type { Request, Response, NextFunction } from "express";
 import { register, login } from "../auth.controller.js";
 import * as authService from "../../service/auth.service.js";
-import { userInfo } from "node:os";
 
 vi.mock("../../service/auth.service.js");
 
@@ -11,7 +10,7 @@ describe("Auth Controller", () => {
 		vi.clearAllMocks();
 	});
 
-	it("should return 201 and the registered user", async () => {
+	it("should register a user and return 201", async () => {
 
 		const req = {
 			body: {
@@ -53,6 +52,36 @@ describe("Auth Controller", () => {
 			message: "User created successfully",
 			user: safeUser
 		});
-
 	});
+
+	it("should pass registration errors to next", async () => {
+
+		const req = {
+			body: {
+				name: "Fakile Razaq",
+				email: "razaq@example.com",
+				username: "jimmie-01",
+				password: "jimmie1234"
+			}
+		}as unknown as Request;
+
+		const res = {
+			status: vi.fn().mockReturnThis(),
+			json: vi.fn()
+		}as unknown as Response;
+
+		const next = vi.fn();
+
+		const error = new Error("Database Failure!");
+
+		vi.mocked(authService.registerUser).mockRejectedValue(error);
+
+		await register(req, res, next);
+
+		expect(next).toHaveBeenCalledWith(error);
+
+		expect(res.status).not.toHaveBeenCalled();
+
+		expect(res.json).not.toHaveBeenCalled();
+	})
 })
