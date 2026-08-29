@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-//import { Request, Response} from "express";
+import type { Request, Response, NextFunction } from "express";
 import { register, login } from "../auth.controller.js";
 import * as authService from "../../service/auth.service.js";
-import { hashPassword } from "../../utils/password.js";
+import { userInfo } from "node:os";
 
 vi.mock("../../service/auth.service.js");
 
@@ -30,11 +30,29 @@ describe("Auth Controller", () => {
 		const next = vi.fn();
 
 		const fakeUser = {
-			name: "Kim Jimmie",
-			email: "kin2Expamle.com",
+			name: "Fakile Razaq",
+			email: "razaq@expamle.com",
 			username: "jimmie-01",
+			password_hash: "iu59#0ibkn$n89%acyt*&buvoir",
+			id: 86
 		};
 
-		vi.mocked(authService.registerUser).mockResolvedValue(fakeUser);
-	})
+		const {password_hash, ...safeUser} = fakeUser;
+
+		vi.mocked(authService.registerUser).
+		mockResolvedValue(fakeUser);
+
+		await register(req, res, next);
+
+		expect(authService.registerUser).
+		toHaveBeenCalledWith(req.body);
+
+		expect(res.status).toHaveBeenCalledWith(201);
+
+		expect(res.json).toHaveBeenCalledWith({
+			message: "User created successfully",
+			user: safeUser
+		});
+
+	});
 })
