@@ -134,4 +134,36 @@ describe("Login", () => {
 			user: safeUser
 		});
 	});
-})
+
+	it("should pass login errors to next", async() => {
+
+		const req = {
+			body: {
+				name: "Razaq",
+				email: "razaq@example.com",
+				username: "jimmie-01",
+				password: "user-password"
+			}
+		}as unknown as Request;
+
+		const res = {
+			status: vi.fn().mockReturnThis(),
+			json: vi.fn()
+		}as unknown as Response
+
+		const next = vi.fn();
+
+		const fakeError = new Error("Database Failure");
+
+		vi.mocked(authService.loginUser).mockRejectedValue(fakeError);
+
+		await login(req, res, next);
+
+		expect(next).toHaveBeenCalledWith(fakeError);
+
+		expect(res.status).not.toHaveBeenCalled();
+
+		expect(res.json).not.toHaveBeenCalled();
+
+	});
+});
