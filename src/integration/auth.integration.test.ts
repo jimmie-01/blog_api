@@ -71,7 +71,7 @@ describe("POST /api/auth/login", () => {
 		
 		const passwordHash = await hashPassword(password);
 
-		const user = await prisma.users.create({
+		await prisma.users.create({
 			data: {
 				name: "Razaq",
 				email: "razaq@example.com",
@@ -89,5 +89,41 @@ describe("POST /api/auth/login", () => {
 
 		expect(response.status).toBe(200);
 
+		expect(response.body).toEqual({
+			message: "Login Successful",
+			user: {
+				id: expect.any(Number),
+				name: "Razaq",
+				email: "razaq@example.com",
+				username: "jimmie-01"
+			}
+		});
+	});
+
+	it("should reject incorrect password", async() => {
+		
+		const password = "user-password123";
+
+		const passwordHash = await hashPassword(password);
+
+		await prisma.users.create({
+			data: {
+				name: "Razaq",
+				email: "razaq@example.com",
+				username: "jimmie-01",
+				password_hash: passwordHash
+			}
+		});
+
+		const response = await request(app).
+		post("/api/auth/login").
+		send({
+			email: "razaq@example.com",
+			password: "wrongpassword"
+		});
+
+		expect(response.status).toBe(500);
+
+		//expect(response.body.message).toBe("Invalid credentials")
 	})
 })
