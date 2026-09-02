@@ -10,6 +10,11 @@ export const errorHandler =
 		});
 	}
 	
+	if (error instanceof Error && error.message === "Invalid credentials") {
+		return res.status(401).json({
+			message: error.message
+		});
+	}
 	console.error(error);
 
 	return res.status(500).json({

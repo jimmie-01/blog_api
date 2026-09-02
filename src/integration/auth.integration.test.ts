@@ -11,12 +11,12 @@ import app from "../app.js";
 import prisma from "../lib/prisma.js";
 import { hashPassword } from "../utils/password.js";
 import { cleanDatabase } from "./helpers/database.js";
-import { createTestUser } from "./helpers/factories.js";
 
 describe("POST /api/auth/register", () => {
 
 	beforeEach( async () => {
 		await cleanDatabase();
+
 	});
 
 	afterAll(async () => {
@@ -122,8 +122,9 @@ describe("POST /api/auth/login", () => {
 			password: "wrongpassword"
 		});
 
-		expect(response.status).toBe(500);
+		expect(response.status).toBe(401);
 
-		//expect(response.body.message).toBe("Invalid credentials")
-	})
+		expect(response.body.message).toBe("Invalid credentials");
+
+	});
 })
