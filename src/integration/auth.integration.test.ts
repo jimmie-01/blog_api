@@ -127,4 +127,45 @@ describe("POST /api/auth/login", () => {
 		expect(response.body.message).toBe("Invalid credentials");
 
 	});
+
+	it("should reject non-existing user", async () => {
+
+		const response = await request(app).
+		post("/api/auth/login").
+		send({
+			email: "nonexixstinguser@example.com",
+			password: "password123"
+		});
+
+		expect(response.status).toBe(401);
+
+		expect(response.body.message).toBe("Invalid credentials");
+	});
+
+	it("should reject an invalid email", async() => {
+
+		const response = await request(app).
+		post("/api/auth/login").
+		send({
+			email: "non-an-email",
+			password: "password123"
+		});
+
+		expect(response.status).toBe(400);
+
+		expect(response.body.message).toBe("Validation failed")
+	});
+
+	it("should reject missind password", async () => {
+
+		const response = await request(app).
+		post("/api/auth/login").
+		send({
+			email: "razaq@example.com"
+		});
+
+		expect(response.status).toBe(400);
+
+		expect(response.body.message).toBe("Validation failed");
+	})
 })
