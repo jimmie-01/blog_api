@@ -56,6 +56,21 @@ describe("POST /api/auth/register", () => {
 			email: "razaq@example.com",
 			username: "jimmie-01"
 		});
+	});
+
+	it("should reject a password less than 8 characters and return 400", async () => {
+
+		const response = await request(app).
+		post("/api/auth/register").
+		send({
+			name: "Razaq",
+			email: "razaq@example.com",
+			username: "jimmie-01",
+			password: "pass123"
+		});
+
+		expect(response.status).toBe(400);
+
 	})
 });
 
@@ -156,7 +171,7 @@ describe("POST /api/auth/login", () => {
 		expect(response.body.message).toBe("Validation failed")
 	});
 
-	it("should reject missind password", async () => {
+	it("should reject missing password", async () => {
 
 		const response = await request(app).
 		post("/api/auth/login").

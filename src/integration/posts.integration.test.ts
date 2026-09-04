@@ -99,7 +99,7 @@ describe("POST /api/posts", () => {
 				id: post3.id,
 				title: "Learning Integration Testing"
 			})
-		]))
+		]));
 	});
 
 	it("should return a single post", async () => {
