@@ -1,6 +1,8 @@
 import { comparePassword, hashPassword } from "../utils/password.js";
 import { RegisterUserDto, UserLoginDto } from "../dto/register-user.dto.js";
 import { createUser, findUserByEmail, findUserByUsername} from "../repositories/user.repository.js";
+import { UnauthorizedError } from "../errors/unauthorized-error.js";
+import { ConflictError } from "../errors/conflict-error.js";
 
 export const registerUser = async (data: RegisterUserDto) => {
 
@@ -8,14 +10,14 @@ export const registerUser = async (data: RegisterUserDto) => {
 	await findUserByEmail(data.email);
 
 	if (existingEmail) {
-		throw new Error("Email already exists");
+		throw new ConflictError("Email already exists");
 	};
 
 	const existingUsername = 
 	await findUserByUsername(data.username);
 
 	if (existingUsername) {
-		throw new Error("Username already exist");
+		throw new ConflictError("Username already exist");
 	}
 
 	const { password, ...userData } = data;
@@ -34,14 +36,14 @@ export const loginUser = async (data: UserLoginDto) => {
 	const user = await findUserByEmail(data.email);
 
 	if (!user) {
-		throw new Error("Invalid credentials");
+		throw new UnauthorizedError("Invalid credentials");
 	}
 
 	const validPassword = 
 	await comparePassword(data.password, user.password_hash);
 
 	if (!validPassword) {
-		throw new Error("Invalid credentials");
+		throw new UnauthorizedError("Invalid credentials");
 	}
 
 	return user;

@@ -71,7 +71,65 @@ describe("POST /api/auth/register", () => {
 
 		expect(response.status).toBe(400);
 
-	})
+		expect(response.body.message).toBe("Validation failed");
+
+	});
+
+	it("should reject an email that already exist", async () => {
+
+		const password = "password123";
+
+		const passwordHash = await hashPassword(password);
+
+		const user = await prisma.users.create({
+			data: {
+				name: "Asiyah",
+				email: "asiyah@example.com",
+				username: "jimmie-01",
+				password_hash: passwordHash
+			}
+		});
+
+		const response = await request(app).
+		post("/api/auth/register").
+		send({
+			name: "Asiyah Fakile",
+			email: user.email,
+			username: user.username,
+			password
+		});
+
+		expect(response.status).toBe(409);
+		expect(response.body.message).toBe("Email already exists");
+	});
+
+	it("should reject a username that already exist", async() => {
+
+		const password = "password123";
+
+		const passwordHash = await hashPassword(password);
+
+		const user = await prisma.users.create({
+			data: {
+				name: "Asiyah",
+				email: "asiyah@example.com",
+				username: "jimmie-01",
+				password_hash: passwordHash
+			}
+		});
+
+		const response = await request(app).
+		post("/api/auth/register").
+		send({
+			name: "Asiyah Fakile",
+			email: "razaq@exapmle.com",
+			username: user.username,
+			password
+		});
+
+		expect(response.status).toBe(409);
+		expect(response.body.message).toBe("Username already exist");
+	});
 });
 
 describe("POST /api/auth/login", () => {
