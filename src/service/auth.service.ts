@@ -3,6 +3,7 @@ import { RegisterUserDto, UserLoginDto } from "../dto/register-user.dto.js";
 import { createUser, findUserByEmail, findUserByUsername} from "../repositories/user.repository.js";
 import { UnauthorizedError } from "../errors/unauthorized-error.js";
 import { ConflictError } from "../errors/conflict-error.js";
+import { generateAccessToken } from "../utils/token.js";
 
 export const registerUser = async (data: RegisterUserDto) => {
 
@@ -46,5 +47,7 @@ export const loginUser = async (data: UserLoginDto) => {
 		throw new UnauthorizedError("Invalid credentials");
 	}
 
-	return user;
+	const accessToken = generateAccessToken(user.id);
+
+	return { user, accessToken };
 }

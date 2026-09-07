@@ -21,7 +21,7 @@ export const generateAccessToken =
 		{ userId },
 		secret,
 		{ 
-			expiresIn: expiresIn as SignOptions["expiresIn"] 
+			expiresIn: expiresIn as NonNullable<SignOptions["expiresIn"]> 
 		}
 	);
 };
