@@ -26,7 +26,10 @@ export const getPostById = async (req: Request, res: Response, next: NextFunctio
 
 export const createPost = async(req: Request, res: Response, next: NextFunction) => {
 	try {
-		const post = await createNewPost(req.body);
+		const post = await createNewPost({
+			...req.body, 
+			user_id: req.user?.userId
+		});
 
 		return res.status(201).json(post);
 	} catch (error) {

@@ -35,15 +35,13 @@ export const authenticate = (
 		if (
 			typeof decoded !== "object" ||
 			decoded == null ||
-			typeof decoded.user_id !== "number"
+			typeof decoded.userId !== "number"
 		){
 			throw new UnauthorizedError("Invalid token");
 		};
 
-		console.log(decoded.user_id)
-
 		req.user = {
-			userId: decoded.user_id
+			userId: decoded.userId
 		}
 		next();
 	} catch (error) {

@@ -10,19 +10,19 @@ export const createPostSchema = z.object({
 	.string()
 	.min(1, "Content is required"),
 
-	user_id: z.number()
+	//user_id: z.number()
 });
 
 export const  updatePostSchema = 
 createPostSchema
-.omit({ 
-	user_id: true 
-})
+// .omit({ 
+// 	user_id: true 
+// })
 .partial()
 //omit() removes user_id and partial() makes the remaining fields optional
 .refine(
 	(data) => Object.keys(data).length > 0,
 	{
-		message: "A least one field must be provided"
+		message: "At least one field must be provided"
 	}
 );

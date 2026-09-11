@@ -14,7 +14,7 @@ export const generateAccessToken =
 	}
 	
 	if (!expiresIn) {
-		throw new Error("JWT_EXPIRES is not configured")
+		throw new Error("JWT_EXPIRES_IN is not configured")
 	}
 
 	return jwt.sign(
