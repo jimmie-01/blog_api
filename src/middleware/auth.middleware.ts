@@ -45,6 +45,9 @@ export const authenticate = (
 		}
 		next();
 	} catch (error) {
+		if (error instanceof jwt.TokenExpiredError) {
+			return next( new UnauthorizedError("Access token has expired"));
+		}
 		next(error)
 	}
 };
