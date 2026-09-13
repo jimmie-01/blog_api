@@ -41,10 +41,15 @@ export const updatePost = async (req: Request, res: Response, next: NextFunction
 
 	try {
 		const id = Number(req.params.id);
+		const userId = req.user!.userId;
 
-		const post = await updateExistingPost(id, req.body);
+		const post = await updateExistingPost(
+			id,
+			req.body,
+			userId
+		);
 
-		return res.json(post);
+		return res.status(200).json(post);
 	} catch (error) {
 		next(error);
 	}
