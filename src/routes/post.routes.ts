@@ -9,6 +9,6 @@ router.get("/", getPosts);
 router.get("/:id", getPostById);
 router.post("/",authenticate, validateCreatePost, createPost);
 router.patch("/:id", authenticate, validateUpdatePost, updatePost);
-router.delete("/:id", deletePost);
+router.delete("/:id", authenticate, deletePost);
 
 export default router;

@@ -59,8 +59,9 @@ export const deletePost = async (req: Request, res: Response, next: NextFunction
 	try {
 		
 		const id = Number(req.params.id);
+		const userId = req.user!.userId;
 
-		await deleteExistingPost(id);
+		await deleteExistingPost(id, userId);
 
 		res.status(204).send();
 		//204 No Content\\

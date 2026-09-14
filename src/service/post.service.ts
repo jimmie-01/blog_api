@@ -42,14 +42,16 @@ export const updateExistingPost = async (
 	return updatePost(id, data);
 };
 
-export const deleteExistingPost = async (id: number) => {
+export const deleteExistingPost = async (id: number, userId: number) => {
 
-	const post = await prisma.posts.findUnique({
-		where: { id }
-	});
+	const post = await getPostById(id);
 
 	if (!post) {
 		throw new NotFoundError("Post Not Found");
+	}
+
+	if (post.user_id !== userId) {
+		throw new ForbiddenError("You are not allowed to delete this post");
 	}
 
 	return deletePost(id);
