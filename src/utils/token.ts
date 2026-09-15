@@ -1,11 +1,13 @@
 import jwt, { SignOptions } from "jsonwebtoken";
+import type { UserRole } from "../generated/prisma/enums.js";
 
 interface TokenPayLoad{
-	userId: number
+	userId: number;
+	role: UserRole;
 };
 
 export const generateAccessToken = 
-(userId: number): string => {
+(userId: number, role: UserRole): string => {
 	const secret = process.env.JWT_SECRET;
 	const expiresIn = process.env.JWT_EXPIRES_IN;
 
@@ -18,7 +20,7 @@ export const generateAccessToken =
 	}
 
 	return jwt.sign(
-		{ userId },
+		{ userId, role },
 		secret,
 		{ 
 			expiresIn: expiresIn as NonNullable<SignOptions["expiresIn"]> 

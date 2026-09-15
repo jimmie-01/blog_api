@@ -47,7 +47,7 @@ export const loginUser = async (data: UserLoginDto) => {
 		throw new UnauthorizedError("Invalid credentials");
 	}
 
-	const accessToken = generateAccessToken(user.id);
+	const accessToken = generateAccessToken(user.id, user.role);
 
 	return { user, accessToken };
 }

@@ -35,13 +35,16 @@ export const authenticate = (
 		if (
 			typeof decoded !== "object" ||
 			decoded == null ||
-			typeof decoded.userId !== "number"
+			typeof decoded.userId !== "number" ||
+			(decoded.role !== "USER" &&	
+				decoded.role !== "ADMIN")
 		){
 			throw new UnauthorizedError("Invalid token");
 		};
 
 		req.user = {
-			userId: decoded.userId
+			userId: decoded.userId,
+			role: decoded.role
 		}
 		next();
 	} catch (error) {
