@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
+import jwt, {TokenExpiredError, JsonWebTokenError} from "jsonwebtoken";
 import { UnauthorizedError } from "../errors/unauthorized-error.js";
 
 interface JwtPayload {
@@ -48,8 +48,14 @@ export const authenticate = (
 		}
 		next();
 	} catch (error) {
-		if (error instanceof jwt.TokenExpiredError) {
+		if (error instanceof TokenExpiredError) {
 			return next( new UnauthorizedError("Access token has expired"));
+		}
+
+		if (error instanceof JsonWebTokenError) {
+			return next(
+				new UnauthorizedError("Invalid access token")
+			);
 		}
 		next(error)
 	}
