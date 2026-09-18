@@ -23,14 +23,15 @@ async (req: Request, res: Response, next: NextFunction) => {
 export const login = 
 async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		const { user, accessToken } = await loginUser(req.body);
+		const { user, accessToken, refreshToken } = await loginUser(req.body);
 
 		const { password_hash, ...safeUser } = user;
 
 		return res.status(200).json({
 			message: "Login Successful",
 			user: safeUser,
-			accessToken
+			accessToken,
+			refreshToken
 		});
 	} catch (error) {
 		next(error);
