@@ -1,9 +1,10 @@
 import { comparePassword, hashPassword } from "../utils/password.js";
 import { RegisterUserDto, UserLoginDto } from "../dto/register-user.dto.js";
-import { createUser, findUserByEmail, findUserByUsername} from "../repositories/user.repository.js";
+import { createUser, findUserByEmail, findUserByUsername, findUserById } from "../repositories/user.repository.js";
 import { UnauthorizedError } from "../errors/unauthorized-error.js";
 import { ConflictError } from "../errors/conflict-error.js";
 import { generateAccessToken, generateRefreshToken } from "../utils/token.js";
+import jwt from "jsonwebtoken";
 
 export const registerUser = async (data: RegisterUserDto) => {
 
@@ -56,4 +57,44 @@ export const loginUser = async (data: UserLoginDto) => {
 		accessToken,
 		refreshToken
 	};
+}
+
+export const refreshAccessToken = async(refreshToken: string) => {
+	const secret = process.env.JWT_SECRET;
+
+	if (!secret) {
+		throw new Error("JWT_SECRET is not configured");
+	}
+
+	try {
+		const decoded = jwt.verify(refreshToken, secret);
+
+		if (
+			typeof decoded !== "object" ||
+			decoded === null ||
+			typeof decoded.userId !== "number" ||
+			decoded.type !== "refresh"
+		) {
+			throw new UnauthorizedError("Invalid refresh token");
+		}
+
+		const user = await findUserById(decoded.userId);
+
+		if (!user) {
+			throw new UnauthorizedError("Invalid refresh token");
+		}
+
+		const accessToken = generateAccessToken(user.id, user.role);
+
+		return accessToken;
+	} catch (error) {
+		if (error instanceof jwt.TokenExpiredError) {
+			throw new UnauthorizedError("Refresh token expired");
+		}
+
+		if (error instanceof jwt.JsonWebTokenError) {
+			throw new UnauthorizedError("Invalid refresh token");
+		}
+		throw error;
+	}
 }

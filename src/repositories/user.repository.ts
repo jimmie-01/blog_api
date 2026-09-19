@@ -27,3 +27,11 @@ export const findUserByUsername = async (username: string) => {
 		}
 	});
 };
+
+export const findUserById = async (id: number) => {
+	return await prisma.users.findUnique({
+		where: {
+			id
+		}
+	});
+}

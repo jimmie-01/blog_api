@@ -7,4 +7,6 @@ const router = Router();
 router.post("/register", validateNewUser, register);
 router.post("/login", validateUserLogin, login);
 
+router.post("/refresh",refreshAccessToken);
+
 export default router;
