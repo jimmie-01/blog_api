@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { registerUser, loginUser } from "../service/auth.service.js";
+import { registerUser, loginUser, refreshAccessToken } from "../service/auth.service.js";
 
 export const register = 
 async (req: Request, res: Response, next: NextFunction) => {
@@ -35,5 +35,19 @@ async (req: Request, res: Response, next: NextFunction) => {
 		});
 	} catch (error) {
 		next(error);
+	}
+};
+
+export const refresh = async (req: Request, res: Response, next: NextFunction) => {
+
+	try {
+		const { refreshToken } = req.body;
+
+		const accessToken = await refreshAccessToken(refreshToken);
+
+		return res.status(200).json({ accessToken });
+
+	} catch (error) {
+		next(error)
 	}
 };

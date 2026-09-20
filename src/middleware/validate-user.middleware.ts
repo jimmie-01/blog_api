@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { userLoginSchema, registerUserSchema } from "../validation/auth.schema.js";
+import { userLoginSchema, registerUserSchema, refreshTokenSchema } from "../validation/auth.schema.js";
 import { z } from "zod";
 
 export const validateNewUser =
@@ -36,3 +36,20 @@ export const validateUserLogin =
 
 	next();
 };
+
+export const validateRefreshToken = 
+(req: Request, res: Response, next: NextFunction) => {
+
+	const result = refreshTokenSchema.safeParse(req.body);
+
+	if (!result.success) {
+		return res.status(400).json({
+			message: "Token validation failed",
+			error: z.flattenError(result.error)
+		});
+	}
+
+	req.body = result.data;
+
+	next();
+}
