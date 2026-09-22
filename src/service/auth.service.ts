@@ -5,6 +5,8 @@ import { UnauthorizedError } from "../errors/unauthorized-error.js";
 import { ConflictError } from "../errors/conflict-error.js";
 import { generateAccessToken, generateRefreshToken } from "../utils/token.js";
 import jwt from "jsonwebtoken";
+import { hashRefreshToken } from "../utils/tokenHash.js";
+import { createSession } from "../repositories/session.repository.js";
 
 export const registerUser = async (data: RegisterUserDto) => {
 
@@ -51,6 +53,18 @@ export const loginUser = async (data: UserLoginDto) => {
 	const accessToken = generateAccessToken(user.id, user.role);
 
 	const refreshToken = generateRefreshToken(user.id);
+
+	const refreshTokenHash = hashRefreshToken(refreshToken);
+
+	const expiresAt = new Date(
+		Date.now() + 7 * 24 * 60 * 60 * 1000
+	);
+
+	await createSession(
+		user.id,
+		refreshTokenHash,
+		expiresAt
+	)
 
 	return {
 		user,

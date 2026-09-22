@@ -49,7 +49,7 @@ model users {
 model sessions {
   id            Int       @id @default(autoincrement())
   user_id       Int
-  refresh_token String    @unique @db.VarChar(255)
+  refresh_token_hash String    @unique @db.VarChar(255)
   expires_at    DateTime
   revoked_at    DateTime?
   created_at    DateTime  @default(now())
