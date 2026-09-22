@@ -6,7 +6,7 @@ import { ConflictError } from "../errors/conflict-error.js";
 import { generateAccessToken, generateRefreshToken } from "../utils/token.js";
 import jwt from "jsonwebtoken";
 import { hashRefreshToken } from "../utils/tokenHash.js";
-import { createSession } from "../repositories/session.repository.js";
+import { createSession, findSessionByTokenHash } from "../repositories/session.repository.js";
 
 export const registerUser = async (data: RegisterUserDto) => {
 
@@ -90,6 +90,22 @@ export const refreshAccessToken = async(refreshToken: string) => {
 			decoded.type !== "refresh"
 		) {
 			throw new UnauthorizedError("Invalid refresh token");
+		}
+
+		const refreshTokenHash = hashRefreshToken(refreshToken);
+
+		const session = await findSessionByTokenHash(refreshTokenHash);
+
+		if (!session) {
+			throw new UnauthorizedError("Invalid refresh token");
+		}
+
+		if (session.revoked_at) {
+			throw new UnauthorizedError("Refresh token has been revoked");
+		}
+
+		if (session.expires_at <= new Date()) {
+			throw new UnauthorizedError("Refresh token expired");
 		}
 
 		const user = await findUserById(decoded.userId);

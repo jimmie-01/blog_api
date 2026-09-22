@@ -14,3 +14,12 @@ async(
 		}
 	});
 };
+
+export const findSessionByTokenHash = 
+async (refreshTokenHash: string) => {
+	return prisma.sessions.findUnique({
+		where: {
+			refresh_token_hash: refreshTokenHash
+		}
+	});
+};
