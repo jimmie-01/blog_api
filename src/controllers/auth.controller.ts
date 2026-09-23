@@ -43,9 +43,13 @@ export const refresh = async (req: Request, res: Response, next: NextFunction) =
 	try {
 		const { refreshToken } = req.body;
 
-		const accessToken = await refreshAccessToken(refreshToken);
+		const { accessToken, refreshToken: newRefreshToken } = 
+		await refreshAccessToken(refreshToken);
 
-		return res.status(200).json({ accessToken });
+		return res.status(200).json({
+			accessToken,
+			refreshToken: newRefreshToken
+		 });
 
 	} catch (error) {
 		next(error)
