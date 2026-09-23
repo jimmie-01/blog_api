@@ -6,7 +6,7 @@ import { ConflictError } from "../errors/conflict-error.js";
 import { generateAccessToken, generateRefreshToken } from "../utils/token.js";
 import jwt from "jsonwebtoken";
 import { hashRefreshToken } from "../utils/tokenHash.js";
-import { createSession, findSessionByTokenHash } from "../repositories/session.repository.js";
+import { createSession, findSessionByTokenHash, revokeSession } from "../repositories/session.repository.js";
 
 export const registerUser = async (data: RegisterUserDto) => {
 
@@ -114,9 +114,26 @@ export const refreshAccessToken = async(refreshToken: string) => {
 			throw new UnauthorizedError("Invalid refresh token");
 		}
 
+		await revokeSession(session.id);
+
 		const accessToken = generateAccessToken(user.id, user.role);
 
-		return accessToken;
+		const newRefreshToken = generateRefreshToken(user.id);
+		
+		const newRefreshTokenHash = hashRefreshToken(newRefreshToken);
+
+		const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+
+		await createSession(
+			user.id,
+			newRefreshTokenHash,
+			expiresAt
+		);
+
+		return {
+			accessToken,
+			refreshToken: newRefreshToken
+		};
 	} catch (error) {
 		if (error instanceof jwt.TokenExpiredError) {
 			throw new UnauthorizedError("Refresh token expired");

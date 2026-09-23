@@ -23,3 +23,14 @@ async (refreshTokenHash: string) => {
 		}
 	});
 };
+
+export const revokeSession = async (sessionId: number) => {
+	return prisma.sessions.update({
+		where: {
+			id: sessionId
+		},
+		data: {
+			revoked_at: new Date()
+		}
+	});
+};
