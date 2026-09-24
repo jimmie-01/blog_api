@@ -145,3 +145,15 @@ export const refreshAccessToken = async(refreshToken: string) => {
 		throw error;
 	}
 }
+
+export const logoutUser = async (refreshToken: string) => {
+	const refreshTokenHash = hashRefreshToken(refreshToken);
+
+	const session = await findSessionByTokenHash(refreshTokenHash);
+
+	if (!session) {
+		throw new UnauthorizedError("Invalid refresh token");
+	}
+
+	await revokeSession(session.id);
+}
