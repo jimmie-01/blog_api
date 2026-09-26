@@ -6,7 +6,7 @@ import { ConflictError } from "../errors/conflict-error.js";
 import { generateAccessToken, generateRefreshToken } from "../utils/token.js";
 import jwt from "jsonwebtoken";
 import { hashRefreshToken } from "../utils/tokenHash.js";
-import { createSession, findSessionByTokenHash, revokeSession } from "../repositories/session.repository.js";
+import { createSession, findSessionByTokenHash, revokeAllUserSessions, revokeSession } from "../repositories/session.repository.js";
 
 export const registerUser = async (data: RegisterUserDto) => {
 
@@ -101,7 +101,9 @@ export const refreshAccessToken = async(refreshToken: string) => {
 		}
 
 		if (session.revoked_at) {
-			throw new UnauthorizedError("Refresh token has been revoked");
+			await revokeAllUserSessions(session.user_id);
+
+			throw new UnauthorizedError("Refresh token reuse detected");
 		}
 
 		if (session.expires_at <= new Date()) {

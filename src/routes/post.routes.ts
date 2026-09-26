@@ -6,7 +6,7 @@ import { authorize } from "../middleware/authorize.middleware.js";
 
 const router = Router();
 
-router.get("/", getPosts);
+router.get("/",authenticate, getPosts);
 router.get("/:id", getPostById);
 router.post("/",authenticate, validateCreatePost, createPost);
 router.patch("/:id", authenticate, validateUpdatePost, updatePost);
