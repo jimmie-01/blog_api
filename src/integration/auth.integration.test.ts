@@ -43,6 +43,8 @@ describe("POST /api/auth/register", () => {
 			user: response.body.user
 		});
 
+		expect(response.body.user.password_hash).toBeUndefined();
+
 		const user = await prisma.users.findUnique({
 			where: {
 				email: response.body.user.email
@@ -75,7 +77,7 @@ describe("POST /api/auth/register", () => {
 
 	});
 
-	it("should reject an email that already exist", async () => {
+	it("should reject duplicate email", async () => {
 
 		const password = "password123";
 
@@ -129,6 +131,25 @@ describe("POST /api/auth/register", () => {
 
 		expect(response.status).toBe(409);
 		expect(response.body.message).toBe("Username already exist");
+	});
+
+	it("should create a USER role by default", async () => {
+		await request(app).
+		post("/api/auth/register").
+		send({
+			name: "Razaq",
+			email: "razaq@example.com",
+			username: "razaq",
+			password: "password123"
+		});
+
+		const user = await prisma.users.findUnique({
+			where: {
+				email: "razaq@example.com"
+			}
+		});
+
+		expect(user?.role).toBe("USER");
 	});
 });
 
